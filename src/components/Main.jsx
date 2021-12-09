@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 import { Form, Card, Button, } from 'react-bootstrap'
+import SpinnerLoading from './SpinnerLoading';
 
 const Main = () => {
     const [fileName, setFileName] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        category: ''
+        category: '',
     })
 
     const { title, content, category } = formData
@@ -20,6 +22,7 @@ const Main = () => {
         if (fileName === null) {
             window.alert('image field for news content cannot be empty')
         } else {
+            setIsLoading(true)
             let formData2 = new FormData()
             formData2.append('image', fileName)
             formData2.append('title', formData.title)
@@ -39,78 +42,87 @@ const Main = () => {
             try {
                 const res = await axios.post('https://zara-magazine-app.herokuapp.com/news/post', body, config)
                 console.log('Response: ', res)
+                setIsLoading(false)
                 window.alert('Article uploaded successfully!')
             } catch (err) {
+                setIsLoading(false)
                 console.log(err.message)
             }
         }
     }
 
     return (
-        <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            padding: 10, 
-            margin: 10, 
-            }}>
-            <Card style={{ width: '70%' }}>
-                <Card.Body>
-                    <Card.Header style={{ color: 'lilac', }}>Upload New Zara News Article</Card.Header>
-                <Form encType='multipart/form-data' onSubmit={e => onNewsUpload(e)}>
+        
+        <>
+            { isLoading ? <SpinnerLoading /> : (
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    padding: 10, 
+                    margin: 10, 
+                    }}>
+                    <Card style={{ width: '70%' }}>
+                        <Card.Body>
+                            <Card.Header style={{ color: 'lilac', }}>Upload New Zara News Article</Card.Header>
+                        <Form encType='multipart/form-data' onSubmit={e => onNewsUpload(e)}>
+                            <br></br>
+                    <Form.Group className="mb-3" controlId="image">
+                        <Form.Control 
+                        type="file"
+                        name='image'
+                        onChange={e => setFileName(e.target.files[0])}
+                        required
+                        />
+                        {console.log('file', fileName)}
+                        <Form.Text className="text-muted">
+                        Upload image.
+                        </Form.Text>
+                    </Form.Group>
                     <br></br>
-            <Form.Group className="mb-3" controlId="image">
-                <Form.Control 
-                type="file"
-                name='image'
-                onChange={e => setFileName(e.target.files[0])}
-                required
-                />
-                {console.log('file', fileName)}
-                <Form.Text className="text-muted">
-                Upload image.
-                </Form.Text>
-            </Form.Group>
-            <br></br>
-            <br></br>
-            <Form.Group className="mb-3" controlId="title">
-                <Form.Control 
-                type="text" 
-                placeholder="title"
-                name='title'
-                value={title}
-                onChange={e => onChangeFormData(e)}
-                />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="content">
-                <Form.Control 
-                type="text" 
-                as='textarea' 
-                rows={10} 
-                placeholder="content" 
-                name='content'
-                value={content}
-                onChange={e => onChangeFormData(e)}
-                />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="category">
-                <Form.Control 
-                type="text" 
-                placeholder="category (Zara Report or Zara Africa)"
-                name='category'
-                value={category}
-                onChange={e => onChangeFormData(e)}
-                />
-            </Form.Group>
-            {console.log({ title, content, category })}
-                <br></br>
-            <Button type="submit" style={{ backgroundColor: '#C8A2C8' }}>
-                Upload news Article
-            </Button>
-            </Form>
-                </Card.Body>
-            </Card>
-            
-        </div>
+                    <br></br>
+                    <Form.Group className="mb-3" controlId="title">
+                        <Form.Control 
+                        type="text" 
+                        placeholder="title"
+                        name='title'
+                        value={title}
+                        onChange={e => onChangeFormData(e)}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="content">
+                        <Form.Control 
+                        type="text" 
+                        as='textarea' 
+                        rows={10} 
+                        placeholder="content" 
+                        name='content'
+                        value={content}
+                        onChange={e => onChangeFormData(e)}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="category">
+                        <Form.Control 
+                        type="text" 
+                        placeholder="category (Zara Report or Zara Africa)"
+                        name='category'
+                        value={category}
+                        onChange={e => onChangeFormData(e)}
+                        required
+                        />
+                    </Form.Group>
+                    {console.log({ title, content, category })}
+                        <br></br>
+                    <Button type="submit" style={{ backgroundColor: '#C8A2C8' }}>
+                        Upload news Article
+                    </Button>
+                    </Form>
+                        </Card.Body>
+                    </Card>
+                    
+                </div>
+            )}
+        
+        </>
     );
 }
 
