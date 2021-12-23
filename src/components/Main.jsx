@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 import { Form, Card, Button, } from 'react-bootstrap'
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown'
 import SpinnerLoading from './SpinnerLoading';
 
 const Main = () => {
     const [fileName, setFileName] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
+    const [value, setValue] = useState('')
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        category: '',
     })
 
     const { title, content, category } = formData
@@ -17,6 +19,11 @@ const Main = () => {
     const onChangeFormData = e => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
+
+    const handleSelect=(e)=>{
+        console.log(e);
+        setValue(e)
+      }
 
     const onNewsUpload = async (e) => {
         if (fileName === null) {
@@ -27,7 +34,7 @@ const Main = () => {
             formData2.append('image', fileName)
             formData2.append('title', formData.title)
             formData2.append('content', formData.content)
-            formData2.append('category', formData.category)
+            formData2.append('category', value)
             e.preventDefault(e)
 
             const config = {
@@ -54,7 +61,7 @@ const Main = () => {
     return (
         
         <>
-            { isLoading ? <SpinnerLoading /> : (
+            { isLoading ? <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}><SpinnerLoading /></div> : (
                 <div style={{ 
                     display: 'flex', 
                     justifyContent: 'center', 
@@ -100,7 +107,7 @@ const Main = () => {
                         onChange={e => onChangeFormData(e)}
                         />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="category">
+                    {/* <Form.Group className="mb-3" controlId="category">
                         <Form.Control 
                         type="text" 
                         placeholder="category (Zara Report or Zara Africa)"
@@ -109,8 +116,19 @@ const Main = () => {
                         onChange={e => onChangeFormData(e)}
                         required
                         />
-                    </Form.Group>
-                    {console.log({ title, content, category })}
+                    </Form.Group> */}
+                    <DropdownButton
+                        alignRight
+                        title="Zara Africa"
+                        id="dropdown-menu-align-right"
+                        onSelect={handleSelect}
+                            >
+                        <Dropdown.Item eventKey="Zara Africa">Zara Africa</Dropdown.Item>
+                        <Dropdown.Item eventKey="Zara potpourri">Zara Potpourri</Dropdown.Item>
+                        <Dropdown.Item eventKey="Zara Report">Zara Report</Dropdown.Item>
+                        <Dropdown.Divider />
+                    </DropdownButton>
+                    {console.log({ title, content, value })}
                         <br></br>
                     <Button type="submit" style={{ backgroundColor: '#C8A2C8' }}>
                         Upload news Article
