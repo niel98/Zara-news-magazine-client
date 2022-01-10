@@ -119,7 +119,7 @@ const Main = () => {
                     </Form.Group> */}
                     <DropdownButton
                         alignRight
-                        title="Zara Africa"
+                        title={value}
                         id="dropdown-menu-align-right"
                         onSelect={handleSelect}
                             >
