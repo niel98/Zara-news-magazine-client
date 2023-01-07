@@ -47,7 +47,7 @@ const Main = () => {
             console.log('data to upload: ', body)
 
             try {
-                const res = await axios.post('https://zara-magazine-app.herokuapp.com/news/post', body, config)
+                const res = await axios.post('https://zara-magazine-api.herokuapp.com/api/v1/news/post', body, config)
                 console.log('Response: ', res)
                 setIsLoading(false)
                 window.alert('Article uploaded successfully!')
